@@ -10,7 +10,7 @@ def maskedSoftmax (x_logits: torch.Tensor, x_mask: torch.Tensor, x_dim: int = -1
     l_probs = torch.exp(x_logits - l_maxv)
     if x_mask is not None:
         l_probs = l_probs * x_mask
-    l_denom = l_probs.sum(dim=x_dim, keepdim=True).clamp_max(1e-30)
+    l_denom = l_probs.sum(dim=x_dim, keepdim=True).clamp_min(1e-30)
     return l_probs / l_denom
 
 def attentionRef (x_Q: torch.Tensor, x_K: torch.Tensor, x_V: torch.Tensor, x_causal: bool = True) -> torch.Tensor:
