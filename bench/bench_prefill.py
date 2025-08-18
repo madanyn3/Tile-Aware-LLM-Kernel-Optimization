@@ -21,7 +21,7 @@ def makeInputs (x_batch: int = 1, x_head: int = 16, x_qLen: int = 1024, x_d: int
     return l_Q,l_K,l_V
 
 @torch.inference_mode()
-def run_prefill(x_batch=1,x_head=16,x_qLen=1024,x_d=128, x_warmup=5, x_iters=20, x_causal=True, x_dtype=torch.float16):
+def runPrefill(x_batch=1,x_head=16,x_qLen=1024,x_d=128, x_warmup=5, x_iters=20, x_causal=True, x_dtype=torch.float16) -> dict:
     tracemalloc.start()
     l_device = common.getDevice()
     common.setSeed(42)
@@ -72,4 +72,4 @@ def run_prefill(x_batch=1,x_head=16,x_qLen=1024,x_d=128, x_warmup=5, x_iters=20,
 if __name__ == "__main__":
     l_sweep = [512, 1024, 2048, 4096]
     for QL in l_sweep:
-        print(run_prefill( x_batch=1,x_head=16,x_qLen=QL,x_d=128,x_causal=False, x_dtype=torch.float16 ))
+        print(runPrefill( x_batch=1,x_head=16,x_qLen=QL,x_d=128,x_causal=False, x_dtype=torch.float16 ))
