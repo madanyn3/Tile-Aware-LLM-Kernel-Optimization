@@ -50,26 +50,20 @@ An experimental project to build transformer attention kernels from scratch in O
 ---
 
 ## Repo Structure
-.
-├── README.md
-├── bench
-│   ├── __pycache__
-│   │   ├── baseline.cpython-38.pyc
-│   │   ├── common.cpython-38.pyc
-│   │   └── reference.cpython-38.pyc
-│   ├── opencl
-│   │   ├── __pycache__
-│   │   │   └── common.cpython-312.pyc
-│   │   ├── common.py
-│   │   └── tiled_matmul.py
-│   └── pytorch
-│       ├── baseline.py
-│       ├── bench_decode.py
-│       ├── bench_prefill.py
-│       ├── common.py
-│       ├── reference.py
-│       └── sweep.py
-└── kernels
-    ├── matmul_tiled.cl
-    ├── vec_add.cl
-    └── vec_add.py
+.<br>
+├── README.md<br>
+├── bench<br>
+│   ├── opencl<br>
+│   │   ├── common.py<br>
+│   │   └── tiled_matmul.py<br>
+│   └── pytorch<br>
+│       ├── baseline.py<br>
+│       ├── bench_decode.py<br>
+│       ├── bench_prefill.py<br>
+│       ├── common.py<br>
+│       ├── reference.py<br>
+│       └── sweep.py<br>
+└── kernels<br>
+    ├── matmul_tiled.cl<br>
+    ├── vec_add.cl<br>
+    └── vec_add.py<br>
