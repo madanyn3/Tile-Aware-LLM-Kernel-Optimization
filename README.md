@@ -26,17 +26,22 @@ An experimental project to build transformer attention kernels from scratch in O
     - OpenCL kernel: ~12.3 ms  
     - Accuracy: max-abs error ≈ 2e-4, MSE ≈ 3.7e-10
 
----
-
-## Next Steps
-
 ### Phase 1 – Naïve Attention Kernel
-- Compute `S = Q @ Kᵀ`.
-- Apply scale factor `1/√d`.
-- Implement row-wise softmax (multi-pass, unoptimized).
-- Compute `O = softmax(S) @ V`.
-- Validate against PyTorch reference for small sizes (e.g., 128×128×64).
-- Goal: correctness first, performance later.
+- Implemented the first end-to-end attention pipeline in OpenCL:
+  - Compute `S = Q @ Kᵀ` using tiled GEMM kernel.
+  - Apply scale factor `1/√d`.
+  - Row-wise softmax:
+    - Started with multi-pass kernels (row max, exponentiation, row sum, normalize).
+    - Then fused into a single softmax kernel for efficiency.
+  - Compute `O = softmax(S) @ V` using tiled GEMM.
+- Validation against PyTorch reference:
+  - For small cases (e.g., `M=N=128, D=64`), outputs match within error tolerance.
+  - Example benchmark (`M=1024, N=1024, D=64`):  
+    - CPU reference: ~26 ms  
+    - OpenCL total time: ~45 ms  
+    - OpenCL kernel time: ~8.4 ms  
+    - Accuracy: max-abs error ≈ 0.5, MSE ≈ 2.6e-3
+- Fused softmax further reduced kernel time (≈0.18 ms), but current implementation is limited by work-group size (≤256). Next step is to introduce **row tiling** for scalability.
 
 ---
 
@@ -54,6 +59,7 @@ An experimental project to build transformer attention kernels from scratch in O
 ├── README.md<br>
 ├── bench<br>
 │   ├── opencl<br>
+|   |   ├── bench_attention.py<br>
 │   │   ├── common.py<br>
 │   │   └── tiled_matmul.py<br>
 │   └── pytorch<br>
@@ -64,6 +70,12 @@ An experimental project to build transformer attention kernels from scratch in O
 │       ├── reference.py<br>
 │       └── sweep.py<br>
 └── kernels<br>
+    ├── attention_naive.cl<br>
     ├── matmul_tiled.cl<br>
+    ├── row_exp_sum.cl<br>
+    ├── row_max.cl<br>
+    ├── row_norm.cl<br>
+    ├── scale_inplace.cl<br>
+    ├── softmax.cl<br>
     ├── vec_add.cl<br>
     └── vec_add.py<br>
