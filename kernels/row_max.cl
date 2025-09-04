@@ -5,12 +5,12 @@
 __kernel void row_max (
     const int M, const int N,
     __global const float* S,
-    __global float row_max_out)
+    __global float* row_max_out)
 {
-    row = get_global_id(0)
+    int row = get_global_id(0);
     if (row > M) return;
 
-    float max_val = -FLT_MAX
+    float max_val = -FLT_MAX;
     for (int i = 0; i < N; ++i) {
         float val = S[row * N + i];
         if (val > max_val) max_val = val;

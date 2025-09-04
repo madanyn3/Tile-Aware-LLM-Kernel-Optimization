@@ -19,8 +19,12 @@ def pickOpenCLDevice():
                     return p, dev
     raise RuntimeError("No OpenCL GPU device found!")
 
-def buildOpenCLProgram(ctx, src_path):
+def buildOpenCLProgramFromPath(ctx, src_path):
     with open(src_path, 'r') as f:
         src = f.read()
+    program = cl.Program(ctx, src).build()
+    return program
+
+def buildOpenClProgramFromString(ctx, src):
     program = cl.Program(ctx, src).build()
     return program

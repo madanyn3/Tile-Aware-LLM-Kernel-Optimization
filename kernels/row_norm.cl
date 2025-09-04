@@ -4,8 +4,8 @@
 
 __kernel void row_norm (
     const int M, const int N,
-    __gloabl float* S,
-    __global const float* row_max)
+    __global float* S,
+    __global const float* row_sum)
 {
     int row = get_global_id(0);
     if (row >= M) return;
