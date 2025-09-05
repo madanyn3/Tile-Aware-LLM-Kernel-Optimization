@@ -9,10 +9,10 @@ from common import pickOpenCLDevice, buildOpenCLProgram
 
 KERNEL_DIR = os.path.join(os.path.dirname(__file__), "..\\..", "kernels")
 
-def runTiledMatmul(ctx, queue, program, M, K, N, tile):
-    A = np.random.randn(M, K).astype(np.float32)
-    B = np.random.randn(K, N).astype(np.float32)
-    C = np.empty((M, N), dtype=np.float32)
+def runTiledMatmul(ctx, queue, program, M, K, N, tile, type):
+    A = np.random.randn(M, K).astype(type)
+    B = np.random.randn(K, N).astype(type)
+    C = np.empty((M, N), dtype=type)
 
     mf = cl.mem_flags
     A_buf = cl.Buffer(ctx, mf.READ_ONLY | mf.COPY_HOST_PTR, hostbuf=A)
