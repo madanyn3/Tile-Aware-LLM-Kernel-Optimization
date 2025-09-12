@@ -60,7 +60,7 @@ def runNaiveAttention (ctx, queue, program, M, N, D, type, TILE, device):
     # -----------------------------
     # Step 2: S = S/sqrt(D)
     # -----------------------------
-    scale = np.float32(1.0 / np.sqrt(D))
+    scale = np.float16(1.0 / np.sqrt(D))
     evt_scale = scale_inplace(
         queue, (M,), None,
         np.int32(M), np.int32(N), scale, S_buf,
@@ -184,7 +184,7 @@ def runAttentionFusedSoftmax (ctx, queue, program, M, N, D, type, TILE, device):
     # -----------------------------
     # Step 2: S = softmax(S * scale)
     # -----------------------------
-    scale = np.float32(1.0 / np.sqrt(D))
+    scale = type(1.0 / np.sqrt(D))
     evt_softmax = softmax(
         queue, (M*N,), local_size,
         np.int32(M), np.int32(N), scale,
@@ -278,7 +278,7 @@ def runAttentionFusedSoftmax2 (ctx, queue, program, M, N, D, type, TILE, device)
     # -----------------------------
     # Step 2: S = softmax(S * scale)
     # -----------------------------
-    scale = np.float32(1.0 / np.sqrt(D))
+    scale = type(1.0 / np.sqrt(D))
     evt_softmax = softmax2(
         queue, (M*N,), local_size,
         np.int32(M), np.int32(N), scale,
@@ -374,7 +374,7 @@ def runAttentionFusedSoftmaxTiled (ctx, queue, program, M, N, D, type, TILE, dev
     # -----------------------------
     # Step 2: S = softmax(S * scale)
     # -----------------------------
-    scale = np.float32(1.0 / np.sqrt(D))
+    scale = type(1.0 / np.sqrt(D))
     evt_softmax = softmax_tiled(
         queue, (M*N,), local_size,
         np.int32(M), np.int32(N), scale,
@@ -444,7 +444,7 @@ def sanitizeSetup(ctx, queue, device):
     # M, N, D = 256, 256, 64
     M, N, D = 128, 256, 32
     TILE = 16
-    type = np.float32
+    type = np.float16
 
     print("==== Naive Attention ====")
     avg_cpu_ms, avg_total_ms, avg_kernel_ms, err, mse = runNaiveAttention(ctx, queue, program, M, N, D, type, TILE, device)
@@ -504,7 +504,7 @@ def attentionSweepBench(ctx, queue, device):
 
     program4 = buildOpenClProgramFromString(ctx, srcFusedSoftmaxAttn)
 
-    type = np.float32
+    type = np.float16
     TILE = 16
 
     # print("M,N,D,CPU(ms),Total(ms),Kernel(ms),Kernel/Total(%),Err,MSE")
